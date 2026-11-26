@@ -1,0 +1,26 @@
+[package]
+name = "pasteboard"
+version = "0.1.0"
+edition = "2021"
+description = "Lightweight LAN clipboard server"
+
+[features]
+# Windows only: build as a GUI-subsystem exe (no console window).
+no-console = []
+
+[dependencies]
+tiny_http = "0.12"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# tiny_http 0.12.0 with one fix (vendor/tiny_http/src/util/equal_reader.rs):
+# discarding an unread request body no longer allocates the whole body at once.
+[patch.crates-io]
+tiny_http = { path = "vendor/tiny_http" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

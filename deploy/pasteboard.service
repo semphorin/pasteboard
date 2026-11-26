@@ -1,0 +1,31 @@
+# systemd unit for pasteboard (Ubuntu / any systemd Linux).
+# install.sh replaces the default install path below with --prefix.
+[Unit]
+Description=Pasteboard LAN clipboard server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pasteboard
+Group=pasteboard
+WorkingDirectory=/opt/pasteboard
+ExecStart=/opt/pasteboard/pasteboard --config /opt/pasteboard/pasteboard.conf
+Restart=on-failure
+RestartSec=2
+MemoryMax=32M
+
+# Hardening: read-only system, writable data dir only.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadWritePaths=/opt/pasteboard/data
+
+[Install]
+WantedBy=multi-user.target
